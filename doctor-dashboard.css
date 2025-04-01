@@ -1,0 +1,329 @@
+/* PCOS Companion - Teal-Themed Doctor Dashboard CSS */
+
+:root {
+    --teal-primary: #008080;
+    --teal-secondary: #005f5f;
+    --teal-light: #80c0c0;
+    --teal-lighter: #e0f2f2;
+    --teal-accent: #00b3b3;
+    --teal-gray: #f0f7f7;
+    --teal-dark: #004d4d;
+    --teal-success: #00a3a3;
+    --teal-warning: #ffa500;
+    --teal-danger: #ff5252;
+    --text-dark: #2c3e50;
+    --text-medium: #4a6572;
+    --text-light: #78909c;
+    --shadow: 0 2px 4px rgba(0, 128, 128, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Base styles */
+body {
+    background-color: #f5f7f8;
+    color: #37474f;
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+.container {
+    max-width: 1320px;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+    background-color: white;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 128, 128, 0.15);
+}
+
+.card-header {
+    background-color: var(--teal-lighter);
+    border-bottom: 1px solid var(--teal-light);
+    padding: 1.25rem;
+}
+
+.card-header h4 {
+    margin: 0;
+    color: var(--teal-primary);
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Statistics Cards */
+.card.bg-primary {
+    background: linear-gradient(135deg, var(--teal-primary), var(--teal-secondary)) !important;
+}
+
+.card.bg-warning {
+    background: linear-gradient(135deg, var(--teal-warning), #ff8c00) !important;
+}
+
+.card.bg-success {
+    background: linear-gradient(135deg, var(--teal-success), var(--teal-secondary)) !important;
+}
+
+.card.bg-info {
+    background: linear-gradient(135deg, var(--teal-accent), var(--teal-primary)) !important;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.card-text {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+/* Table Styles */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: var(--teal-primary);
+    padding: 1rem;
+    background-color: var(--teal-lighter);
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    transition: var(--transition);
+}
+
+.table tbody tr:hover {
+    background-color: var(--teal-lighter);
+}
+
+/* Patient Image */
+.rounded-circle {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border: 2px solid var(--teal-light);
+    box-shadow: var(--shadow);
+}
+
+/* Patient Info */
+.patient-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-info strong {
+    color: var(--teal-primary);
+    font-size: 0.9rem;
+}
+
+.patient-info small {
+    color: var(--text-medium);
+    font-size: 0.8rem;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.badge.bg-danger {
+    background-color: var(--teal-danger) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--teal-warning) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--teal-success) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--text-muted) !important;
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--teal-primary);
+    border-color: var(--teal-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--teal-secondary);
+    border-color: var(--teal-secondary);
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* List Group Styles */
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid var(--teal-light);
+    padding: 1rem;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item h6 {
+    margin-bottom: 0.25rem;
+    color: var(--teal-primary);
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-text {
+        font-size: 1.5rem;
+    }
+    
+    .table-responsive {
+        margin: 0 -1.5rem;
+    }
+    
+    .table td, .table th {
+        padding: 0.75rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+    }
+
+    .patient-info {
+        margin-top: 0.5rem;
+    }
+}
+
+/* Loading State */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Empty State */
+.text-muted {
+    color: var(--text-muted) !important;
+    font-style: italic;
+}
+
+/* Utility Classes */
+.mt-4 {
+    margin-top: 1.5rem !important;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Table Header */
+.table thead th {
+    background-color: var(--teal-lighter);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: var(--teal-primary);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.4em 0.8em;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Recent Reports */
+.recent-reports .list-group-item {
+    transition: var(--transition);
+}
+
+.recent-reports .list-group-item:hover {
+    background-color: var(--teal-lighter);
+    transform: translateX(5px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--teal-lighter);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--teal-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--teal-secondary);
+}

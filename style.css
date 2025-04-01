@@ -1,0 +1,125 @@
+/* General Styling */
+body {
+    background-color: #e0f7fa; /* Light teal */
+    font-family: 'Poppins', sans-serif;
+    color: #004d40; /* Dark teal */
+}
+
+/* Container */
+.container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Page Heading */
+h2 {
+    color: #00695c; /* Deep Teal */
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #00897b; /* Teal */
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #00695c; /* Darker teal */
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: #4db6ac; /* Soft teal */
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #00897b;
+}
+
+/* Table Styling */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #004d40; /* Dark teal */
+    color: white;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #b2dfdb; /* Light teal */
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Badges (Risk Levels) */
+.badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+.bg-danger {
+    background-color: #d32f2f !important; /* Red */
+}
+
+.bg-warning {
+    background-color: #ffb300 !important; /* Orange */
+}
+
+.bg-success {
+    background-color: #388e3c !important; /* Green */
+}
+
+.bg-secondary {
+    background-color: #78909c !important; /* Gray */
+}
+
+/* Table Row Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.table tbody tr {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Review Button Animation */
+.btn-primary i {
+    transition: transform 0.3s ease-in-out;
+}
+
+.btn-primary:hover i {
+    transform: rotate(15deg);
+}
+
+/* Alert Box Animation */
+.alert {
+    animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

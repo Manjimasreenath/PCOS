@@ -1,0 +1,271 @@
+:root {
+    --primary: #008080;
+    --primary-light: #20B2AA;
+    --secondary: #5F9EA0;
+    --dark: #2F4F4F;
+    --light: #E0FFFF;
+    --white: #fff;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-600: #6c757d;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Profile Section */
+.profile-section {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.doctor-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.doctor-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--light);
+}
+
+.doctor-details h1 {
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.specialization {
+    color: var(--primary);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.hospital {
+    color: var(--gray-600);
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: var(--light);
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    color: var(--gray-600);
+}
+
+/* Dashboard Content */
+.dashboard-section {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.dashboard-section h2 {
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+/* Search Bar */
+.search-bar {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-left: 2.5rem;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0,128,128,0.1);
+    outline: none;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-600);
+}
+
+/* Evaluation Cards */
+.evaluation-card, .patient-card, .diet-plan-card {
+    background: var(--gray-100);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.evaluation-card:hover, .patient-card:hover, .diet-plan-card:hover {
+    transform: translateX(5px);
+}
+
+.patient-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.patient-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.patient-info h3 {
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+}
+
+.patient-info p {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.btn-secondary {
+    background: var(--gray-200);
+    color: var(--gray-600);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.evaluation-actions, .patient-actions, .plan-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Diet Plan Cards */
+.diet-plan-card {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.plan-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.plan-date {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+.plan-details {
+    margin-bottom: 1rem;
+    color: var(--gray-600);
+}
+
+.no-data {
+    text-align: center;
+    color: var(--gray-600);
+    padding: 2rem;
+    background: var(--gray-100);
+    border-radius: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .doctor-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .evaluation-card, .patient-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .patient-info {
+        flex-direction: column;
+    }
+
+    .evaluation-actions, .patient-actions, .plan-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+} 
