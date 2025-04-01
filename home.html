@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Home - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Companion - Early Detection & Management</title>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/components.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{{ url_for('about') }}" class="nav-link">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+               
+                {% if 'user_id' in session %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary">Sign In</a>
+                {% endif %}
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>Early PCOS Detection Made Simple</h1>
+                <p class="hero-subtitle">Choose your path to better health understanding</p>
+            </div>
+            <div class="hero-illustration">
+                <img src="{{ url_for('static', filename='images/illustrations/pcos-hero.svg') }}" 
+                     alt="PCOS Detection Illustration" 
+                     class="floating-illustration">
+                <div class="illustration-dots"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Paths Section -->
+    <section class="user-paths">
+        <div class="container">
+            <div class="paths-grid">
+                <!-- First-time User Path -->
+                <div class="path-card">
+                    <img src="{{ url_for('static', filename='CSS/assessment.jpg') }}" 
+                         alt="Questionnaire Assessment"
+                         class="path-illustration">
+                    <h2>First Time Assessment</h2>
+                    <p>New to PCOS testing? Start with our comprehensive questionnaire to assess your symptoms and risk factors.</p>
+                    <ul class="path-features">
+                        <li><i class="fas fa-check"></i> Detailed symptom analysis</li>
+                        <li><i class="fas fa-check"></i> Lifestyle assessment</li>
+                        <li><i class="fas fa-check"></i> Preliminary risk evaluation</li>
+                    </ul>
+                    {% if 'user_id' in session %}
+                        <a href="{{ url_for('questionnaire') }}" class="btn btn-primary">Start Questionnaire</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary">Sign In to Start</a>
+    {% endif %}
+                </div>
+
+                <!-- Ultrasound Analysis Path -->
+                <div class="path-card">
+                    <img src="{{ url_for('static', filename='CSS/ultra.jpg') }}" 
+                         alt="Ultrasound Analysis"
+                         class="path-illustration">
+                    <h2>Ultrasound Analysis</h2>
+                    <p>Have ultrasound images? Get analysis along with targeted assessment questions.</p>
+                    <ul class="path-features">
+                        <li><i class="fas fa-check"></i> Expert system evaluation</li>
+                        <li><i class="fas fa-check"></i> Detailed health insights</li>
+                    </ul>
+                    {% if 'user_id' in session %}
+                        <a href="{{ url_for('upload_ultrasound') }}" class="btn btn-primary">Upload Images</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary">Sign In to Start</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Choose Your Path</h3>
+                    <p>Select between questionnaire or ultrasound analysis based on your situation</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Complete Assessment</h3>
+                    <p>Answer questions or upload images for analysis</p>
+            </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Results</h3>
+                    <p>Receive detailed insights and recommendations</p>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>PCOS Companion</h3>
+                <p>Empowering women through early detection and management of PCOS.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                    <a href="{{ url_for('about') }}">About Us</a>
+                    
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; PCOS Companion.</p>
+        </div>
+        </div>
+    </footer>
+
+    <!-- Add this before closing body tag -->
+    <script>
+    // Intersection Observer for step animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    // Observe all steps
+    document.querySelectorAll('.step').forEach((step) => {
+        observer.observe(step);
+    });
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+            ? '<i class="fas fa-times"></i>' 
+            : '<i class="fas fa-bars"></i>';
+    });
+
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            navLinks.classList.remove('active');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

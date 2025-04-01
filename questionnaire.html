@@ -1,0 +1,503 @@
+{% extends "base.html" %}
+
+{% block title %}PCOS Assessment Questionnaire{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/questionnaire.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        margin-left: 5px;
+        color: #666;
+        cursor: help;
+    }
+    .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 250px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+    .bmi-display {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+    .section-progress {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 5px;
+    }
+    .section-progress-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .section-progress-item.active {
+        color: #007bff;
+    }
+    .section-progress-item.completed {
+        color: #28a745;
+    }
+    .notes-section {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 5px;
+    }
+    .save-draft-btn {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+    .save-draft-btn:hover {
+        background: #5a6268;
+    }
+    .validation-message {
+        color: #dc3545;
+        font-size: 0.8em;
+        margin-top: 5px;
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="questionnaire-container">
+    <div class="questionnaire-header">
+        <h1>PCOS Assessment Questionnaire</h1>
+        <p class="subtitle">Please answer all questions accurately for the best assessment</p>
+    </div>
+
+    <!-- Section Progress -->
+    <div class="section-progress">
+        <div class="section-progress-item" data-section="personal">
+            <i class="fas fa-user"></i>
+            <span>Personal Info</span>
+        </div>
+        <div class="section-progress-item" data-section="menstrual">
+            <i class="fas fa-calendar"></i>
+            <span>Menstrual History</span>
+        </div>
+        <div class="section-progress-item" data-section="marriage">
+            <i class="fas fa-heart"></i>
+            <span>Marriage & Pregnancy</span>
+        </div>
+        <div class="section-progress-item" data-section="symptoms">
+            <i class="fas fa-stethoscope"></i>
+            <span>Symptoms</span>
+        </div>
+        <div class="section-progress-item" data-section="lifestyle">
+            <i class="fas fa-heartbeat"></i>
+            <span>Lifestyle</span>
+        </div>
+    </div>
+
+    <form action="{{ url_for('questionnaire') }}" method="POST" id="pcosForm" class="questionnaire-form">
+        <!-- Personal Information Section -->
+        <div class="form-section" id="personal-section">
+            <h2><i class="fas fa-user"></i> Personal Information</h2>
+            
+            <div class="form-group">
+                <label for="age">Age (years)</label>
+                <input type="number" id="age" name="age" required min="15" max="60">
+                <div class="validation-message">Please enter a valid age between 15 and 60</div>
+            </div>
+
+            <div class="form-group">
+                <label for="weight">Weight (kg)</label>
+                <input type="number" id="weight" name="weight" required step="0.1" min="30" max="200">
+                <div class="validation-message">Please enter a valid weight between 30 and 200 kg</div>
+            </div>
+
+            <div class="form-group">
+                <label for="height">Height (cm)</label>
+                <input type="number" id="height" name="height" required step="0.1" min="140" max="200">
+                <div class="validation-message">Please enter a valid height between 140 and 200 cm</div>
+            </div>
+
+            <div class="form-group">
+                <label for="bmi">BMI</label>
+                <div class="bmi-display" id="bmi-display">Your BMI will be calculated automatically</div>
+            </div>
+
+            <div class="form-group">
+                <label for="blood_group">Blood Group (Optional)</label>
+                <select id="blood_group" name="blood_group">
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Menstrual History Section -->
+        <div class="form-section" id="menstrual-section">
+            <h2><i class="fas fa-calendar"></i> Menstrual History</h2>
+            
+            <div class="form-group">
+                <label for="cycle_regularity">Cycle Regularity</label>
+                <select id="cycle_regularity" name="cycle_regularity" required>
+                    <option value="">Select regularity</option>
+                    <option value="regular">Regular</option>
+                    <option value="irregular">Irregular</option>
+                </select>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Regular: Cycles occur every 21-35 days. Irregular: Cycles vary in length or occur less frequently.</span>
+                </i>
+            </div>
+
+            <div class="form-group">
+                <label for="cycle_length">Average Cycle Length (days)</label>
+                <input type="number" id="cycle_length" name="cycle_length" required min="21" max="90">
+                <div class="validation-message">Please enter a valid cycle length between 21 and 90 days</div>
+            </div>
+        </div>
+
+        <!-- Marriage and Pregnancy Section -->
+        <div class="form-section" id="marriage-section">
+            <h2><i class="fas fa-heart"></i> Marriage and Pregnancy History</h2>
+            
+            <div class="form-group">
+                <label for="marriage_years">Years of Marriage</label>
+                <input type="number" id="marriage_years" name="marriage_years" required min="0" max="50">
+                <div class="validation-message">Please enter a valid number of years between 0 and 50</div>
+            </div>
+
+            <div class="form-group">
+                <label>Have you been pregnant?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="pregnant" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="pregnant" value="no">
+                        No
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="abortions">Number of Abortions</label>
+                <input type="number" id="abortions" name="abortions" required min="0" max="10">
+                <div class="validation-message">Please enter a valid number between 0 and 10</div>
+            </div>
+        </div>
+
+        <!-- Symptoms Section -->
+        <div class="form-section" id="symptoms-section">
+            <h2><i class="fas fa-stethoscope"></i> Symptoms</h2>
+            
+            <div class="form-group">
+                <label>Do you have weight gain issues?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="weight_gain" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="weight_gain" value="no">
+                        No
+                    </label>
+                </div>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Unexpected or rapid weight gain, especially around the abdomen</span>
+                </i>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have excessive hair growth?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="hair_growth" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="hair_growth" value="no">
+                        No
+                    </label>
+                </div>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Excessive hair growth on face, chest, back, or other areas</span>
+                </i>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have skin darkening?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="skin_darkening" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="skin_darkening" value="no">
+                        No
+                    </label>
+                </div>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Dark patches of skin, especially in body folds</span>
+                </i>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have hair loss?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="hair_loss" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="hair_loss" value="no">
+                        No
+                    </label>
+                </div>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Thinning hair or male-pattern baldness</span>
+                </i>
+            </div>
+
+            <div class="form-group">
+                <label>Do you have pimples?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="pimples" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="pimples" value="no">
+                        No
+                    </label>
+                </div>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Persistent acne or pimples, especially in adulthood</span>
+                </i>
+            </div>
+        </div>
+
+        <!-- Lifestyle Section -->
+        <div class="form-section" id="lifestyle-section">
+            <h2><i class="fas fa-heartbeat"></i> Lifestyle</h2>
+            
+            <div class="form-group">
+                <label>Do you consume fast food regularly?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="fast_food" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="fast_food" value="no">
+                        No
+                    </label>
+                </div>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Regular consumption of processed or fast food (more than 2-3 times per week)</span>
+                </i>
+            </div>
+
+            <div class="form-group">
+                <label>Do you exercise regularly?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="regular_exercise" value="yes" required>
+                        Yes
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="regular_exercise" value="no">
+                        No
+                    </label>
+                </div>
+                <i class="fas fa-info-circle tooltip">
+                    <span class="tooltip-text">Regular physical activity (at least 30 minutes, 3-4 times per week)</span>
+                </i>
+            </div>
+        </div>
+
+       
+
+        <div class="form-actions">
+            <button type="button" class="save-draft-btn" id="saveDraft">
+                <i class="fas fa-save"></i> Save Draft
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> Submit Assessment
+            </button>
+            <button type="reset" class="btn btn-secondary">
+                <i class="fas fa-redo"></i> Reset Form
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Progress indicator -->
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-text">Form Completion: <span id="progressText">0%</span></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('pcosForm');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const requiredInputs = form.querySelectorAll('input[required], select[required]');
+    const totalRequired = requiredInputs.length;
+    const sections = document.querySelectorAll('.form-section');
+    const sectionProgressItems = document.querySelectorAll('.section-progress-item');
+
+    // BMI Calculator
+    function calculateBMI() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const height = parseFloat(document.getElementById('height').value) / 100; // Convert to meters
+        if (weight && height) {
+            const bmi = (weight / (height * height)).toFixed(1);
+            const bmiDisplay = document.getElementById('bmi-display');
+            let bmiCategory = '';
+            if (bmi < 18.5) bmiCategory = 'Underweight';
+            else if (bmi < 25) bmiCategory = 'Normal';
+            else if (bmi < 30) bmiCategory = 'Overweight';
+            else bmiCategory = 'Obese';
+            bmiDisplay.textContent = `Your BMI: ${bmi} (${bmiCategory})`;
+        }
+    }
+
+    // Update BMI when weight or height changes
+    document.getElementById('weight').addEventListener('input', calculateBMI);
+    document.getElementById('height').addEventListener('input', calculateBMI);
+
+    // Form validation
+    function validateInput(input) {
+        const validationMessage = input.nextElementSibling;
+        if (validationMessage && validationMessage.classList.contains('validation-message')) {
+            if (!input.checkValidity()) {
+                validationMessage.style.display = 'block';
+            } else {
+                validationMessage.style.display = 'none';
+            }
+        }
+    }
+
+    // Update section progress
+    function updateSectionProgress() {
+        sections.forEach((section, index) => {
+            const sectionInputs = section.querySelectorAll('input[required], select[required]');
+            const completedInputs = Array.from(sectionInputs).filter(input => {
+                if (input.type === 'radio') {
+                    return form.querySelector(`input[name="${input.name}"]:checked`) !== null;
+                }
+                return input.value !== '';
+            }).length;
+            
+            const sectionProgress = (completedInputs / sectionInputs.length) * 100;
+            const progressItem = sectionProgressItems[index];
+            
+            if (sectionProgress === 100) {
+                progressItem.classList.add('completed');
+            } else if (sectionProgress > 0) {
+                progressItem.classList.add('active');
+            }
+        });
+    }
+
+    // Update overall progress
+    function updateProgress() {
+        const completed = Array.from(requiredInputs).filter(input => {
+            if (input.type === 'radio') {
+                const radioGroup = form.querySelector(`input[name="${input.name}"]:checked`);
+                return radioGroup !== null;
+            }
+            return input.value !== '';
+        }).length;
+
+        const percentage = (completed / totalRequired) * 100;
+        progressBar.style.width = `${percentage}%`;
+        progressText.textContent = `${Math.round(percentage)}%`;
+        updateSectionProgress();
+    }
+
+    // Save draft functionality
+    document.getElementById('saveDraft').addEventListener('click', function() {
+        const formData = new FormData(form);
+        const draft = {};
+        formData.forEach((value, key) => {
+            draft[key] = value;
+        });
+        localStorage.setItem('pcosQuestionnaireDraft', JSON.stringify(draft));
+        alert('Draft saved successfully!');
+    });
+
+    // Load draft if exists
+    const savedDraft = localStorage.getItem('pcosQuestionnaireDraft');
+    if (savedDraft) {
+        const draft = JSON.parse(savedDraft);
+        Object.keys(draft).forEach(key => {
+            const input = form.elements[key];
+            if (input) {
+                if (input.type === 'radio') {
+                    const radio = form.querySelector(`input[name="${key}"][value="${draft[key]}"]`);
+                    if (radio) radio.checked = true;
+                } else {
+                    input.value = draft[key];
+                }
+            }
+        });
+        updateProgress();
+        calculateBMI();
+    }
+
+    // Event listeners
+    form.addEventListener('change', updateProgress);
+    form.addEventListener('input', updateProgress);
+    requiredInputs.forEach(input => {
+        input.addEventListener('input', () => validateInput(input));
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            alert('Please fill in all required fields correctly.');
+        } else {
+            localStorage.removeItem('pcosQuestionnaireDraft');
+        }
+    });
+
+    // Initialize
+    updateProgress();
+    calculateBMI();
+});
+</script>
+{% endblock %} 

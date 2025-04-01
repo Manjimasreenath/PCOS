@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Create Account</h2>
+        <p class="auth-subtitle">Join us on your journey to better health</p>
+        
+        <form method="POST" action="{{ url_for('register') }}" class="auth-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+                <i class="fas fa-user input-icon"></i>
+        </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label for="account_type">Account Type</label>
+                <select id="account_type" name="account_type" required onchange="toggleFields()">
+                    <option value="patient">Patient</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="lab_assistant">Lab</option>
+                </select>
+            </div>
+
+            <!-- Doctor-specific fields -->
+            <div id="doctor_fields" style="display: none;">
+                <div class="form-group">
+                    <label for="specialization">Specialization</label>
+                    <input type="text" id="specialization" name="specialization">
+                </div>
+                
+                <div class="form-group">
+                    <label for="license_number">Medical License Number</label>
+                    <input type="text" id="license_number" name="license_number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="hospital">Hospital/Clinic</label>
+                    <input type="text" id="hospital" name="hospital">
+                </div>
+                
+                <div class="form-group">
+                    <label for="experience">Years of Experience</label>
+                    <input type="number" id="experience" name="experience" min="0" value="0">
+                </div>
+            </div>
+
+            <!-- Lab-specific fields -->
+            <div id="lab_fields" style="display: none;">
+                <div class="form-group">
+                    <label for="lab_name">Lab Name</label>
+                    <input type="text" id="lab_name" name="lab_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="qualification">Qualification</label>
+                    <select id="qualification" name="qualification" required>
+                        <option value="">Select Qualification</option>
+                        <option value="diploma">Diploma in Medical Lab Technology</option>
+                        <option value="bachelor">Bachelor in Medical Lab Technology</option>
+                        <option value="master">Master in Medical Lab Technology</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lab_experience">Years of Experience</label>
+                    <input type="number" id="lab_experience" name="experience" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="specializations">Specializations</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="specializations" value="ultrasound"> Ultrasound
+                        </label>
+                        <label>
+                            <input type="checkbox" name="specializations" value="blood_test"> Blood Tests
+                        </label>
+                        <label>
+                            <input type="checkbox" name="specializations" value="hormone_test"> Hormone Tests
+                        </label>
+                        <label>
+                            <input type="checkbox" name="specializations" value="imaging"> Medical Imaging
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Account</button>
+            
+            <div class="auth-links">
+                <span>Already have an account?</span>
+                <a href="{{ url_for('login') }}">Sign In</a>
+            </div>
+        </form>
+
+        
+<script>
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = input.nextElementSibling.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+function toggleFields() {
+    const accountType = document.getElementById('account_type').value;
+    const doctorFields = document.getElementById('doctor_fields');
+    const labFields = document.getElementById('lab_fields');
+    
+    doctorFields.style.display = accountType === 'doctor' ? 'block' : 'none';
+    labFields.style.display = accountType === 'lab_assistant' ? 'block' : 'none';
+    
+    // Make fields required based on account type
+    const doctorInputs = doctorFields.getElementsByTagName('input');
+    const labInputs = labFields.getElementsByTagName('input');
+    const labSelects = labFields.getElementsByTagName('select');
+    
+    for (let input of doctorInputs) {
+        input.required = accountType === 'doctor';
+    }
+    
+    for (let input of labInputs) {
+        input.required = accountType === 'lab_assistant';
+    }
+    
+    for (let select of labSelects) {
+        select.required = accountType === 'lab_assistant';
+    }
+}
+
+// Call on page load to set initial state
+document.addEventListener('DOMContentLoaded', toggleFields);
+</script>
+
+<style>
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin: 0;
+}
+</style>
+{% endblock %}

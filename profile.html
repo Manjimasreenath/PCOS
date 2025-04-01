@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/profile.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-info">
+            <img src="{{ url_for('static', filename='uploads/' + session['user_id'] + '/' + user.profile_image) if user.profile_image else url_for('static', filename='images/default-avatar.png') }}" 
+                 alt="Profile Picture" 
+                 class="profile-avatar"
+                 title="Click to change profile picture">
+            <div class="profile-details">
+                <h1 class="profile-name">{{ user.name }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.tests_taken|default(0) }}</div>
+                        <div class="stat-label">Tests Taken</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.days_tracked|default(0) }}</div>
+                        <div class="stat-label">Days Tracked</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ user.achievements|default(0) }}</div>
+                        <div class="stat-label">Achievements</div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn btn-primary" id="editProfileBtn">Edit Profile</button>
+                    <a href="{{ url_for('view_health_report') }}" class="btn btn-outline">View Health Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <!-- Left Column -->
+        <div class="profile-sidebar">
+            <div class="profile-section">
+                <h2 class="section-title">Personal Information</h2>
+                <form id="profileForm" class="profile-form">
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" value="{{ user.age|default('') }}" min="0" max="120">
+                    </div>
+                    <div class="form-group">
+                        <label for="height">Height (cm)</label>
+                        <input type="number" id="height" name="height" value="{{ user.height|default('') }}" min="0" max="300" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" value="{{ user.weight|default('') }}" min="0" max="500" step="0.1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">Notification Settings</h2>
+                <form id="notificationForm">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="email_notifications" 
+                                   {{ 'checked' if user.notification_settings.email_notifications|default(false) }}>
+                            Email Notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="test_reminders"
+                                   {{ 'checked' if user.notification_settings.test_reminders|default(false) }}>
+                            Test Reminders
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="health_tips"
+                                   {{ 'checked' if user.notification_settings.health_tips|default(false) }}>
+                            Health Tips
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="profile-main">
+            <div class="profile-section">
+                <h2 class="section-title">Health Metrics</h2>
+                <div class="health-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value">{{ user.bmi|default('--') }}</div>
+                        <div class="metric-label">BMI</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ user.cycle_length|default('--') }}</div>
+                        <div class="metric-label">Cycle Length</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">{{ user.last_test_date.strftime('%Y-%m-%d') if user.last_test_date else '--' }}</div>
+                        <div class="metric-label">Last Test</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">Recent Activity</h2>
+                <ul class="activity-list">
+                    {% for activity in activities %}
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-{{ activity.icon }}"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">{{ activity.title }}</div>
+                            <div class="activity-date">{{ activity.date }}</div>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-info"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">No recent activity</div>
+                            <div class="activity-date">Take a test to get started!</div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">Health Goals</h2>
+                <div class="health-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="metric-label">Exercise 3x/week</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <div class="metric-label">Balanced Diet</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="metric-label">8h Sleep</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast" style="display: none;">
+    <div class="toast-content"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Profile image upload
+    const profileImage = document.querySelector('.profile-avatar');
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    
+    profileImage.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', async function() {
+        if (this.files && this.files[0]) {
+            const formData = new FormData();
+            formData.append('image', this.files[0]);
+            
+            try {
+                const response = await fetch('/upload-profile-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    profileImage.src = data.image_url;
+                    showToast('Profile picture updated successfully!', 'success');
+                } else {
+                    showToast('Failed to update profile picture', 'error');
+                }
+            } catch (error) {
+                showToast('Error uploading image', 'error');
+            }
+        }
+    });
+
+    // Profile form submission
+    const profileForm = document.getElementById('profileForm');
+    profileForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(profileForm);
+        try {
+            const response = await fetch('/profile', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            if (data.status === 'success') {
+                showToast('Profile updated successfully!', 'success');
+            } else {
+                showToast('Failed to update profile', 'error');
+            }
+        } catch (error) {
+            showToast('Error updating profile', 'error');
+        }
+    });
+
+    // Notification settings
+    const notificationForm = document.getElementById('notificationForm');
+    const notificationInputs = notificationForm.querySelectorAll('input[type="checkbox"]');
+    
+    notificationInputs.forEach(input => {
+        input.addEventListener('change', async function() {
+            const settings = {
+                email_notifications: notificationForm.email_notifications.checked,
+                test_reminders: notificationForm.test_reminders.checked,
+                health_tips: notificationForm.health_tips.checked
+            };
+            
+            try {
+                const response = await fetch('/update-notifications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(settings)
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showToast('Notification settings updated!', 'success');
+                } else {
+                    showToast('Failed to update notification settings', 'error');
+                }
+            } catch (error) {
+                showToast('Error updating notification settings', 'error');
+            }
+        });
+    });
+
+    // Toast notification function
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.className = `toast ${type}`;
+        toast.querySelector('.toast-content').textContent = message;
+        toast.style.display = 'block';
+        
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+});
+</script>
+{% endblock %} 

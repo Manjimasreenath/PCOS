@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Ultrasound Images</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/home.css') }}">
+</head>
+<body>
+    <!-- Include your navbar here -->
+    
+    <div class="container">
+        <h1>Upload Ultrasound Images</h1>
+        <form action="{{ url_for('upload_ultrasound') }}" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="ultrasound">Choose Ultrasound Images</label>
+                <input type="file" id="ultrasound" name="ultrasound" accept="image/*" multiple required>
+            </div>
+            
+            <!-- Add additional form fields here -->
+            
+            <button type="submit" class="btn btn-primary">Upload and Analyze</button>
+        </form>
+    </div>
+
+    <!-- Include your footer here -->
+</body>
+</html> 

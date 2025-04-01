@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/doctor_dashboard.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Doctor Profile Section -->
+    <div class="profile-section">
+        <div class="doctor-info">
+            <img src="{{ url_for('static', filename='uploads/' + session['user_id'] + '/' + user.profile_image) if user.profile_image else url_for('static', filename='images/default-avatar.png') }}" 
+                 alt="Doctor's Profile" class="doctor-avatar">
+            <div class="doctor-details">
+                <h1>Dr. {{ user.name }}</h1>
+                <p class="specialization">{{ user.specialization }}</p>
+                <p class="hospital">{{ user.hospital }}</p>
+            </div>
+        </div>
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <span class="stat-value">{{ total_patients }}</span>
+                <span class="stat-label">Total Patients</span>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clipboard-check"></i>
+                <span class="stat-value">{{ evaluations_today }}</span>
+                <span class="stat-label">Today's Evaluations</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Content -->
+    <div class="dashboard-content">
+        <!-- Pending Evaluations -->
+        <section class="dashboard-section">
+            <h2>Pending Evaluations</h2>
+            <div class="evaluation-list">
+                {% for eval in pending_evaluations %}
+                <div class="evaluation-card">
+                    <div class="patient-info">
+                        <img src="{{ eval.patient_image }}" alt="Patient" class="patient-avatar">
+                        <div>
+                            <h3>{{ eval.patient_name }}</h3>
+                            <p>Submitted: {{ eval.submission_date }}</p>
+                        </div>
+                    </div>
+                    <div class="evaluation-actions">
+                        <a href="{{ url_for('evaluate_ultrasound', evaluation_id=eval._id) }}" class="btn btn-primary">
+                            <i class="fas fa-microscope"></i> Evaluate
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="no-data">No pending evaluations</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Pending Ultrasound Reviews -->
+        <section class="dashboard-section">
+            <h2><i class="fas fa-microscope"></i> Pending Ultrasound Reviews</h2>
+            <div class="evaluation-list">
+                {% for request in pending_ultrasound_requests %}
+                <div class="evaluation-card">
+                    <div class="patient-info">
+                        <img src="{{ url_for('static', filename='images/default-avatar.png') }}" alt="Patient" class="patient-avatar">
+                        <div>
+                            <h3>{{ request.patient_name }}</h3>
+                            <p>Uploaded: {{ request.upload_date.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                            <p><span class="badge bg-warning text-dark">{{ request.images|length }} image(s)</span></p>
+                        </div>
+                    </div>
+                    <div class="evaluation-actions">
+                        <a href="{{ url_for('doctor_review_ultrasound', request_id=request._id) }}" class="btn btn-primary">
+                            <i class="fas fa-robot"></i> Review with AI
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="no-data">No pending ultrasound reviews</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Patient Management -->
+        <section class="dashboard-section">
+            <h2>My Patients</h2>
+            <div class="search-bar">
+                <input type="text" id="patientSearch" placeholder="Search patients...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="patient-list">
+                {% for patient in patients %}
+                <div class="patient-card">
+                    <div class="patient-info">
+                        <img src="{{ patient.image }}" alt="Patient" class="patient-avatar">
+                        <div>
+                            <h3>{{ patient.name }}</h3>
+                            <p>Last Visit: {{ patient.last_visit }}</p>
+                        </div>
+                    </div>
+                    <div class="patient-actions">
+                        <a href="{{ url_for('patient_history', patient_id=patient._id) }}" class="btn btn-secondary">
+                            <i class="fas fa-history"></i> History
+                        </a>
+                        <a href="{{ url_for('create_diet_plan', patient_id=patient._id) }}" class="btn btn-primary">
+                            <i class="fas fa-utensils"></i> Diet Plan
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="no-data">No patients assigned yet</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Diet Plans -->
+        <section class="dashboard-section">
+            <h2>Recent Diet Plans</h2>
+            <div class="diet-plans-list">
+                {% for plan in diet_plans %}
+                <div class="diet-plan-card">
+                    <div class="plan-header">
+                        <h3>{{ plan.patient_name }}</h3>
+                        <span class="plan-date">Created: {{ plan.creation_date }}</span>
+                    </div>
+                    <div class="plan-details">
+                        <p>{{ plan.description[:100] }}...</p>
+                    </div>
+                    <div class="plan-actions">
+                        <a href="{{ url_for('edit_diet_plan', plan_id=plan._id) }}" class="btn btn-secondary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{{ url_for('view_diet_plan', plan_id=plan._id) }}" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="no-data">No diet plans created yet</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Patient search functionality
+    const searchInput = document.getElementById('patientSearch');
+    const patientCards = document.querySelectorAll('.patient-card');
+    
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        patientCards.forEach(card => {
+            const patientName = card.querySelector('h3').textContent.toLowerCase();
+            card.style.display = patientName.includes(searchTerm) ? 'flex' : 'none';
+        });
+    });
+});
+</script>
+{% endblock %} 

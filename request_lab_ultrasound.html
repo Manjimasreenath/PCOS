@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Request Ultrasound Image Upload - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<style>
+    .request-form {
+        background-color: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .info-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-left: 4px solid #6a5acd;
+    }
+    
+    .info-section h3 {
+        color: #6a5acd;
+        margin-bottom: 15px;
+    }
+    
+    .info-item {
+        display: flex;
+        margin-bottom: 15px;
+    }
+    
+    .info-icon {
+        color: #6a5acd;
+        font-size: 1.2rem;
+        margin-right: 15px;
+        width: 24px;
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .btn-submit {
+        background-color: #6a5acd;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-submit:hover {
+        background-color: #5a4cad;
+        transform: translateY(-2px);
+    }
+    
+    .btn-cancel {
+        background-color: #f8f9fa;
+        color: #333;
+        padding: 12px 25px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+    
+    .btn-cancel:hover {
+        background-color: #e9ecef;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Request Ultrasound Image Upload</h1>
+            
+            <div class="info-section">
+                <h3>About Ultrasound Image Analysis</h3>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div>
+                        <p>An ultrasound is an important diagnostic tool for PCOS. Our lab will perform the ultrasound and upload the images directly to our system for doctor review.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <p>The procedure typically takes 30-45 minutes and is painless. You may need to have a full bladder for the test.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div>
+                        <p>After submitting this request, our lab will contact you to schedule a convenient time for your ultrasound procedure.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="request-form">
+                <form method="POST" action="{{ url_for('request_lab_ultrasound') }}">
+                    <div class="form-group">
+                        <label for="notes" class="form-label">Additional Information (Optional)</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Any special requirements, preferred timing, or information you'd like to share with the lab"></textarea>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <a href="{{ url_for('patient_dashboard') }}" class="btn-cancel">Cancel</a>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane mr-2"></i> Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="info-section">
+                <h3>What Happens Next?</h3>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <p><strong>Step 1:</strong> Lab receives your request and contacts you to schedule an appointment.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-hospital-user"></i>
+                    </div>
+                    <div>
+                        <p><strong>Step 2:</strong> You visit the lab for your ultrasound procedure.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <div>
+                        <p><strong>Step 3:</strong> Lab uploads your ultrasound images to our system.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div>
+                        <p><strong>Step 4:</strong> Doctor reviews your images and provides analysis.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div>
+                        <p><strong>Step 5:</strong> You receive a notification when results are ready to view.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Preparation Instructions</h3>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-glass-water"></i>
+                    </div>
+                    <div>
+                        <p><strong>For pelvic ultrasound:</strong> Drink 32 ounces (about 1 liter) of water 1 hour before your appointment and do not empty your bladder.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div>
+                        <p>You may eat normally before the test.</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div>
+                        <p>Wear comfortable, loose-fitting clothing to your appointment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            // Basic form validation if needed
+        });
+    });
+</script>
+{% endblock %} 

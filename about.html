@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}About - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/about.css') }}">
+{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - PCOS Companion</title>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/components/navbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/components/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/about.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{{ url_for('about') }}" class="nav-link active">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+                
+                {% if 'user_id' in session %}
+                    <div class="user-menu">
+                        <button class="user-menu-btn">
+                            <i class="fas fa-user-circle"></i>
+                            <span>My Account</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{{ url_for('profile') }}">
+                                <i class="fas fa-user"></i>
+                                Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('logout') }}" class="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="auth-btn login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </a>
+                    <a href="{{ url_for('register') }}" class="auth-btn register-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Register
+                    </a>
+                {% endif %}
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Empowering Women Through Technology</h1>
+            <p>Leading the way in PCOS detection and management</p>
+        </div>
+        <div class="hero-wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill="#ffffff" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="mission-content" data-aos="fade-up">
+                <div class="mission-text">
+                    <h2>Our Mission</h2>
+                    <p>At PCOS Companion, we're dedicated to revolutionizing how PCOS is detected and managed. Through innovative technology and artificial intelligence, we aim to make early detection accessible to all women worldwide.</p>
+                    <div class="mission-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Women Helped</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Accuracy Rate</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Support</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mission-image" data-aos="fade-left">
+                    <img src="{{ url_for('static', filename='CSS/mission.jpg') }}" alt="Our Mission">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="container">
+            <h2 data-aos="fade-up">Our Core Values</h2>
+            <div class="values-grid">
+                <div class="value-card" data-aos="fade-up">
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Patient-Centered</h3>
+                    <p>We put our users' needs first in everything we do</p>
+                </div>
+                <div class="value-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="value-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h3>Innovation</h3>
+                    <p>Constantly improving our technology for better results</p>
+                </div>
+                <div class="value-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Trust</h3>
+                    <p>Building reliable and secure healthcare solutions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personalization Section -->
+    <section class="personalization-section">
+        <div class="container">
+            <h2 data-aos="fade-up">Personalized Health Journey</h2>
+            <p class="section-subtitle" data-aos="fade-up">Customized diet and exercise plans tailored to your unique needs</p>
+            
+            <div class="personalization-grid">
+                <!-- Diet Customization -->
+                <div class="personalization-card" data-aos="fade-up">
+                    <div class="card-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Customized Diet Plans</h3>
+                        <p>Our AI-powered system creates personalized nutrition plans based on your:</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> PCOS symptoms and severity</li>
+                            <li><i class="fas fa-check"></i> Dietary preferences and restrictions</li>
+                            <li><i class="fas fa-check"></i> Nutritional needs and goals</li>
+                            <li><i class="fas fa-check"></i> Lifestyle and daily routine</li>
+                        </ul>
+                    </div>
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='CSS/blog2.jpg') }}" alt="Diet Customization">
+                    </div>
+                </div>
+
+                <!-- Exercise Customization -->
+                <div class="personalization-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Tailored Exercise Programs</h3>
+                        <p>Get workout plans designed specifically for you, considering your:</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Fitness level and capabilities</li>
+                            <li><i class="fas fa-check"></i> Health conditions and limitations</li>
+                            <li><i class="fas fa-check"></i> Exercise preferences</li>
+                            <li><i class="fas fa-check"></i> Available time and equipment</li>
+                        </ul>
+                    </div>
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='CSS/blog3.jpg') }}" alt="Exercise Customization">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-content" data-aos="fade-up">
+                <h2>Get in Touch</h2>
+                <p>Have questions? We're here to help!</p>
+                <a href="mailto:contact@pcoscompanion.com" class="contact-btn">
+                    <i class="fas fa-envelope"></i>
+                    Contact Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer class="footer">
+        <div class="footer-wave">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill="#2F4F4F" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info -->
+                <div class="footer-section" data-aos="fade-up">
+                    <h3>PCOS Companion</h3>
+                    <p>Empowering women through early detection and management of PCOS using innovative AI technology.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Follow us on Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" aria-label="Follow us on Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" aria-label="Follow us on Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" aria-label="Follow us on LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section" data-aos="fade-up" data-aos-delay="100">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('home') }}"><i class="fas fa-chevron-right"></i>Home</a></li>
+                        <li><a href="{{ url_for('about') }}"><i class="fas fa-chevron-right"></i>About Us</a></li>
+                        <li><a href="{{ url_for('blog') }}"><i class="fas fa-chevron-right"></i>Resources</a></li>
+                        {% if 'user_id' in session %}
+                            <li><a href="{{ url_for('logout') }}"><i class="fas fa-chevron-right"></i>Logout</a></li>
+                        {% else %}
+                            <li><a href="{{ url_for('login') }}"><i class="fas fa-chevron-right"></i>Sign In</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div class="footer-section" data-aos="fade-up" data-aos-delay="200">
+                    <h3>Our Services</h3>
+                    <ul class="footer-links">
+                        {% if 'user_id' in session %}
+                            <li><a href="{{ url_for('questionnaire') }}"><i class="fas fa-chevron-right"></i>PCOS Assessment</a></li>
+                            <li><a href="{{ url_for('upload_ultrasound') }}"><i class="fas fa-chevron-right"></i>Image Analysis</a></li>
+                        {% else %}
+                            <li><a href="{{ url_for('login') }}"><i class="fas fa-chevron-right"></i>Start Assessment</a></li>
+                            <li><a href="{{ url_for('about') }}"><i class="fas fa-chevron-right"></i>Learn More</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="footer-section" data-aos="fade-up" data-aos-delay="300">
+                    <h3>Contact Us</h3>
+                    <ul class="contact-info">
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:contact@pcoscompanion.com">contact@pcoscompanion.com</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+1234567890">+1 (234) 567-890</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>123 Health Street, Medical District<br>New York, NY 10001</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+                <p class="copyright">&copy; 2024 PCOS Companion. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+            this.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

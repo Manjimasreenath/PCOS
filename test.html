@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/test.css') }}">
+    <style>
+        #questionnaire {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #ultrasound-test {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('about') }}">About</a>
+    <a href="{{ url_for('test') }}" class="active">Test</a>
+</nav>
+
+<!-- Test Dashboard -->
+<section class="test-dashboard">
+    <div class="dashboard-header" data-aos="fade-up">
+        <h1>PCOS Test Dashboard</h1>
+        <p>Choose your preferred testing method</p>
+    </div>
+
+    <div class="test-options" data-aos="fade-up">
+        {% if not test_taken %}
+            <!-- If first time taking test -->
+            <button type="button" onclick="startQuestionnaire()">Take Questionnaire Test</button>
+        {% else %}
+            <!-- If test already taken, show both options -->
+            <button type="button" onclick="startQuestionnaire()">Take Questionnaire Test</button>
+            <button type="button" onclick="startUltrasoundTest()">Upload Ultrasound Image Test</button>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Questionnaire Form -->
+<div id="questionnaire">
+    <h3>Answer the following questions:</h3>
+    <form id="pcos-form" action="{{ url_for('test') }}" method="post">
+        <div>
+            <label>1. Irregular periods?</label>
+            <select name="irregular_periods">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <div>
+            <label>2. Unwanted hair growth (hirsutism)?</label>
+            <select name="hirsutism">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <div>
+            <label>3. Sudden weight gain?</label>
+            <select name="weight_gain">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <div>
+            <label>4. Acne or oily skin?</label>
+            <select name="acne">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <div>
+            <label>5. Hair thinning or hair loss?</label>
+            <select name="hair_loss">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <div>
+            <label>6. Family history of PCOS?</label>
+            <select name="family_history">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <div>
+            <label>7. High blood sugar or insulin resistance?</label>
+            <select name="insulin_resistance">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+
+        <button type="submit">Submit Test</button>
+    </form>
+</div>
+
+<!-- Ultrasound Test Form -->
+<div id="ultrasound-test">
+    <h3>Upload Your Ultrasound Image:</h3>
+    <form action="{{ url_for('upload_ultrasound') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="ultrasound_image" accept="image/*" required>
+        <button type="submit">Upload & Analyze</button>
+    </form>
+</div>
+
+<script>
+    function startQuestionnaire() {
+        const questionnaire = document.getElementById('questionnaire');
+        questionnaire.style.display = 'block';
+        setTimeout(() => {
+            questionnaire.style.opacity = '1';
+        }, 10);
+    }
+
+    function startUltrasoundTest() {
+        const ultrasoundTest = document.getElementById('ultrasound-test');
+        ultrasoundTest.style.display = 'block';
+        setTimeout(() => {
+            ultrasoundTest.style.opacity = '1';
+        }, 10);
+    }
+</script>
+
+</body>
+</html>

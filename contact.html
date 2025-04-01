@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<style>
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .contact-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .contact-header h1 {
+        color: #6a5acd;
+        margin-bottom: 15px;
+    }
+
+    .contact-header p {
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .contact-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+
+    .contact-form {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #6a5acd;
+        outline: none;
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .btn-submit {
+        background: #6a5acd;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: #5949b9;
+    }
+
+    .contact-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 30px;
+    }
+
+    .info-item {
+        margin-bottom: 25px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .info-icon {
+        font-size: 24px;
+        color: #6a5acd;
+        margin-right: 15px;
+        min-width: 30px;
+        text-align: center;
+    }
+
+    .info-content h3 {
+        margin: 0 0 5px;
+        color: #333;
+    }
+
+    .info-content p {
+        margin: 0;
+        color: #666;
+    }
+
+    .social-links {
+        margin-top: 30px;
+    }
+
+    .social-links h3 {
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .social-icons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: #6a5acd;
+        color: white;
+        border-radius: 50%;
+        font-size: 20px;
+        transition: transform 0.3s, background 0.3s;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-5px);
+        background: #5949b9;
+    }
+
+    @media (max-width: 768px) {
+        .contact-content {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+    <div class="contact-header">
+        <h1>Contact Us</h1>
+        <p>Have questions about PCOS or need assistance with our platform? Our team is here to help. Fill out the form below or use our contact information to get in touch.</p>
+    </div>
+
+    <div class="contact-content">
+        <div class="contact-form">
+            <h2>Send us a message</h2>
+            <form action="{{ url_for('contact') }}" method="POST">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" class="form-control" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Send Message</button>
+            </form>
+        </div>
+
+        <div class="contact-info">
+            <h2>Contact Information</h2>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="info-content">
+                    <h3>Address</h3>
+                    <p>123 Health Avenue, Medical District</p>
+                    <p>New Delhi, India 110001</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <div class="info-content">
+                    <h3>Phone</h3>
+                    <p>+91 98765 43210</p>
+                    <p>Mon-Fri: 9:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="info-content">
+                    <h3>Email</h3>
+                    <p>support@pcoscompanion.com</p>
+                    <p>info@pcoscompanion.com</p>
+                </div>
+            </div>
+
+            <div class="social-links">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

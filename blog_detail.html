@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ blog.title }} - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/blog.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="blog-detail-container">
+    <div class="blog-detail-header">
+        <div class="blog-category">{{ blog.category }}</div>
+        <h1 class="blog-title">{{ blog.title }}</h1>
+        <div class="blog-meta">
+            <span class="blog-author">
+                <i class="fas fa-user"></i> {{ blog.author }}
+            </span>
+            <span class="blog-date">
+                <i class="fas fa-calendar"></i> {{ blog.date_posted }}
+            </span>
+        </div>
+        <div class="blog-tags">
+            {% for tag in blog.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="blog-content">
+        {{ blog.content }}
+    </div>
+
+    <div class="blog-navigation">
+        <a href="{{ url_for('blog') }}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to Blog
+        </a>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}AI-Generated Health Plan{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/health_plan.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="health-plan-container">
+    <div class="plan-header">
+        <div class="patient-info">
+            <h1>Personalized Health Plan</h1>
+            <p class="patient-name">For: {{ patient.name }}</p>
+            <p class="plan-date">Generated on: {{ health_plan.creation_date.strftime('%B %d, %Y') }}</p>
+        </div>
+        <div class="plan-actions">
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-download"></i> Download Plan
+            </button>
+            <button class="btn btn-secondary" id="shareBtn">
+                <i class="fas fa-share"></i> Share with Patient
+            </button>
+        </div>
+    </div>
+
+    <!-- Assessment Summary -->
+    <section class="assessment-summary">
+        <h2>Assessment Overview</h2>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <i class="fas fa-weight"></i>
+                <div class="summary-info">
+                    <h3>BMI</h3>
+                    <p>{{ assessment.personal_info.bmi }}</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-calendar"></i>
+                <div class="summary-info">
+                    <h3>Cycle Status</h3>
+                    <p>{{ "Regular" if assessment.menstrual_history.regular_periods else "Irregular" }}</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-running"></i>
+                <div class="summary-info">
+                    <h3>Activity Level</h3>
+                    <p>{{ "Active" if assessment.health_history.exercise else "Sedentary" }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diet Plan -->
+    <section class="diet-plan">
+        <h2><i class="fas fa-utensils"></i> Personalized Diet Plan</h2>
+        <div class="meal-grid">
+            <div class="meal-section">
+                <h3>Breakfast Options</h3>
+                <ul class="meal-list">
+                    {% for meal in health_plan.diet_plan.breakfast %}
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {{ meal }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="meal-section">
+                <h3>Lunch Options</h3>
+                <ul class="meal-list">
+                    {% for meal in health_plan.diet_plan.lunch %}
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {{ meal }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="meal-section">
+                <h3>Dinner Options</h3>
+                <ul class="meal-list">
+                    {% for meal in health_plan.diet_plan.dinner %}
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {{ meal }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="meal-section">
+                <h3>Healthy Snacks</h3>
+                <ul class="meal-list">
+                    {% for snack in health_plan.diet_plan.snacks %}
+                    <li>
+                        <i class="fas fa-check"></i>
+                        {{ snack }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exercise Plan -->
+    <section class="exercise-plan">
+        <h2><i class="fas fa-dumbbell"></i> Exercise Recommendations</h2>
+        <div class="exercise-grid">
+            <div class="exercise-section">
+                <h3>Cardio Workouts</h3>
+                <div class="exercise-list">
+                    {% for exercise in health_plan.exercise_plan.cardio %}
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <h4>{{ exercise.name }}</h4>
+                            <span class="duration">{{ exercise.duration }}</span>
+                        </div>
+                        <p class="frequency">{{ exercise.frequency }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="exercise-section">
+                <h3>Strength Training</h3>
+                <div class="exercise-list">
+                    {% for exercise in health_plan.exercise_plan.strength %}
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <h4>{{ exercise.name }}</h4>
+                            {% if exercise.duration %}
+                            <span class="duration">{{ exercise.duration }}</span>
+                            {% else %}
+                            <span class="sets">{{ exercise.sets }} sets × {{ exercise.reps }} reps</span>
+                            {% endif %}
+                        </div>
+                        {% if exercise.frequency %}
+                        <p class="frequency">{{ exercise.frequency }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Notes -->
+    <section class="additional-notes">
+        <h2><i class="fas fa-clipboard-list"></i> Important Notes</h2>
+        <div class="notes-content">
+            <ul>
+                <li>This plan is personalized based on your assessment results and PCOS profile.</li>
+                <li>Start gradually and adjust intensity based on your comfort level.</li>
+                <li>Stay hydrated and maintain regular meal timings.</li>
+                <li>Track your progress and symptoms regularly.</li>
+                <li>Consult your doctor before making significant changes to your routine.</li>
+            </ul>
+        </div>
+    </section>
+</div>
+
+<!-- Share Modal -->
+<div id="shareModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Share Health Plan</h2>
+        <form id="shareForm">
+            <div class="form-group">
+                <label>Add a personal note (optional):</label>
+                <textarea name="note" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send to Patient</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shareBtn = document.getElementById('shareBtn');
+    const modal = document.getElementById('shareModal');
+    const closeBtn = document.querySelector('.close');
+    const shareForm = document.getElementById('shareForm');
+
+    shareBtn.addEventListener('click', function() {
+        modal.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    shareForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Handle sharing logic here
+        modal.style.display = 'none';
+        alert('Health plan shared with patient successfully!');
+    });
+});
+</script>
+{% endblock %} 

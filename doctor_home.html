@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Home - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/doctor_home.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>Welcome back, Dr. {{ user.name }}</h1>
+        <p>Manage your patients and provide expert care through our comprehensive PCOS management platform.</p>
+    </div>
+</div>
+
+<div class="quick-stats">
+    <div class="stat-card">
+        <i class="fas fa-user-clock"></i>
+        <div class="stat-info">
+            <h3>{{ pending_evaluations|length }}</h3>
+            <p>Pending Evaluations</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <div class="stat-info">
+            <h3>{{ total_patients }}</h3>
+            <p>Active Patients</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-clipboard-check"></i>
+        <div class="stat-info">
+            <h3>{{ today_appointments }}</h3>
+            <p>Today's Appointments</p>
+        </div>
+    </div>
+</div>
+
+<div class="main-content">
+    <!-- Quick Actions -->
+    <section class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+            <a href="{{ url_for('doctor_dashboard') }}" class="action-card">
+                <i class="fas fa-columns"></i>
+                <h3>Dashboard</h3>
+                <p>View your complete dashboard</p>
+            </a>
+            <a href="#" class="action-card" id="evaluateBtn">
+                <i class="fas fa-microscope"></i>
+                <h3>Evaluate Results</h3>
+                <p>Review pending ultrasound results</p>
+            </a>
+            <a href="#" class="action-card" id="createDietBtn">
+                <i class="fas fa-utensils"></i>
+                <h3>Create Diet Plan</h3>
+                <p>Design new diet plans</p>
+            </a>
+            <a href="#" class="action-card" id="scheduleBtn">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Schedule</h3>
+                <p>Manage your appointments</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Recent Activity -->
+    <div class="content-grid">
+        <section class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list">
+                {% for activity in recent_activities %}
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-{{ activity.icon }}"></i>
+                    </div>
+                    <div class="activity-details">
+                        <p class="activity-text">{{ activity.description }}</p>
+                        <span class="activity-time">{{ activity.time }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <p class="no-activity">No recent activity</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Urgent Cases -->
+        <section class="urgent-cases">
+            <h2>Priority Cases</h2>
+            <div class="cases-list">
+                {% for case in urgent_cases %}
+                <div class="case-item">
+                    <div class="case-header">
+                        <h4>{{ case.patient_name }}</h4>
+                        <span class="priority-badge">{{ case.priority }}</span>
+                    </div>
+                    <p>{{ case.description }}</p>
+                    <div class="case-actions">
+                        <a href="#" class="btn btn-primary">Review Case</a>
+                    </div>
+                </div>
+                {% else %}
+                <p class="no-cases">No priority cases at the moment</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <section class="appointments">
+        <h2>Today's Appointments</h2>
+        <div class="appointments-list">
+            {% for appointment in today_appointments_list %}
+            <div class="appointment-card">
+                <div class="time-slot">{{ appointment.time }}</div>
+                <div class="appointment-info">
+                    <h4>{{ appointment.patient_name }}</h4>
+                    <p>{{ appointment.purpose }}</p>
+                </div>
+                <div class="appointment-actions">
+                    <button class="btn btn-outline">Reschedule</button>
+                    <button class="btn btn-primary">Start Session</button>
+                </div>
+            </div>
+            {% else %}
+            <p class="no-appointments">No appointments scheduled for today</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any interactive features here
+    const evaluateBtn = document.getElementById('evaluateBtn');
+    const createDietBtn = document.getElementById('createDietBtn');
+    const scheduleBtn = document.getElementById('scheduleBtn');
+
+    evaluateBtn.addEventListener('click', function() {
+        window.location.href = "{{ url_for('doctor_dashboard') }}";
+    });
+
+    createDietBtn.addEventListener('click', function() {
+        // Handle diet plan creation
+    });
+
+    scheduleBtn.addEventListener('click', function() {
+        // Handle schedule management
+    });
+});
+</script>
+{% endblock %} 

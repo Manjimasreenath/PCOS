@@ -1,0 +1,310 @@
+# app.py
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+import os
+import numpy as np
+from werkzeug.utils import secure_filename
+from PIL import Image
+import pickle
+import joblib
+import pandas as pd
+
+app = Flask(__name__)
+app.secret_key = 'pcos_detection_secret_key'
+
+# Configure upload folder
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Create uploads directory if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Mock function for questionnaire-based prediction
+# In production, replace with actual trained model
+def predict_from_questionnaire(answers):
+    # This would load your trained model
+    # model = joblib.load('models/questionnaire_model.pkl')
+    # return model.predict([answers])[0]
+    
+    # For demo, use a simple rule-based approach
+    risk_score = 0
+    
+    # Check key risk factors
+    if answers.get('irregular_periods', 0) == 1:
+        risk_score += 3
+    if answers.get('weight_gain', 0) == 1:
+        risk_score += 2
+    if answers.get('excessive_hair', 0) == 1:
+        risk_score += 2
+    if answers.get('skin_darkening', 0) == 1:
+        risk_score += 1
+    if answers.get('hair_loss', 0) == 1:
+        risk_score += 1
+    if answers.get('acne', 0) == 1:
+        risk_score += 1
+    if answers.get('family_history', 0) == 1:
+        risk_score += 2
+        
+    return 1 if risk_score >= 5 else 0
+
+# Mock function for ultrasound image-based prediction
+# In production, replace with actual trained model
+def predict_from_image(image_path, answers):
+    # This would use your image classification model
+    # img = preprocess_image(image_path)
+    # model = load_model('models/ultrasound_model.h5')
+    # prediction = model.predict(img)
+    
+    # For demo, combine image "analysis" with questionnaire
+    risk_score = 0
+    
+    # Add questionnaire score
+    if answers.get('irregular_periods', 0) == 1:
+        risk_score += 2
+    if answers.get('polycystic_ovaries', 0) == 1:
+        risk_score += 4  # Higher weight for diagnosed polycystic ovaries
+    if answers.get('hormone_imbalance', 0) == 1:
+        risk_score += 2
+        
+    # Assume we "analyzed" image and found some indicators
+    # In real implementation, this would be the model's output
+    risk_score += 3
+    
+    return 1 if risk_score >= 5 else 0
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_diet_plan(is_pcos, bmi, vegetarian=False):
+    if is_pcos:
+        if bmi > 25:  # Overweight
+            if vegetarian:
+                return {
+                    "breakfast": "Greek yogurt with berries and chia seeds",
+                    "lunch": "Lentil soup with mixed vegetables and quinoa",
+                    "dinner": "Tofu stir-fry with broccoli and brown rice",
+                    "snacks": "Handful of almonds, Apple slices with almond butter"
+                }
+            else:
+                return {
+                    "breakfast": "Vegetable omelet with spinach and tomatoes",
+                    "lunch": "Grilled chicken salad with olive oil and lemon dressing",
+                    "dinner": "Baked salmon with roasted vegetables",
+                    "snacks": "Greek yogurt, Mixed nuts"
+                }
+        else:  # Normal weight
+            if vegetarian:
+                return {
+                    "breakfast": "Smoothie with spinach, banana, and plant protein",
+                    "lunch": "Mediterranean chickpea salad",
+                    "dinner": "Vegetable curry with brown rice",
+                    "snacks": "Hummus with carrot sticks, Pear"
+                }
+            else:
+                return {
+                    "breakfast": "Scrambled eggs with vegetables",
+                    "lunch": "Tuna salad with mixed greens",
+                    "dinner": "Turkey and vegetable stir-fry with quinoa",
+                    "snacks": "Boiled egg, Orange"
+                }
+    else:
+        # Regular balanced diet
+        if vegetarian:
+            return {
+                "breakfast": "Oatmeal with fruits and nuts",
+                "lunch": "Vegetable wrap with hummus",
+                "dinner": "Bean and vegetable soup with whole grain bread",
+                "snacks": "Trail mix, Yogurt"
+            }
+        else:
+            return {
+                "breakfast": "Whole grain toast with avocado and egg",
+                "lunch": "Chicken and vegetable wrap",
+                "dinner": "Baked fish with sweet potato and green beans",
+                "snacks": "Apple, String cheese"
+            }
+
+def get_exercise_plan(is_pcos, fitness_level):
+    if is_pcos:
+        if fitness_level == "beginner":
+            return {
+                "cardio": "30 minutes of walking, 3 times per week",
+                "strength": "Bodyweight exercises (squats, pushups) 2 times per week",
+                "flexibility": "10 minutes of stretching daily",
+                "notes": "Focus on consistency. Start with shorter sessions and gradually increase duration."
+            }
+        elif fitness_level == "intermediate":
+            return {
+                "cardio": "30 minutes of jogging/cycling/swimming, 4 times per week",
+                "strength": "Weight training 3 times per week, focusing on compound movements",
+                "flexibility": "15 minutes of yoga, 3 times per week",
+                "notes": "Incorporate interval training once a week to boost metabolism."
+            }
+        else:  # advanced
+            return {
+                "cardio": "45 minutes of high-intensity cardio, 4 times per week",
+                "strength": "Weight training 4 times per week with split routine",
+                "flexibility": "20 minutes of yoga or pilates, 3 times per week",
+                "notes": "Include HIIT workouts twice a week. Ensure adequate recovery between intense sessions."
+            }
+    else:
+        # Regular exercise recommendations
+        if fitness_level == "beginner":
+            return {
+                "cardio": "20 minutes of moderate activity, 3 times per week",
+                "strength": "Basic strength exercises once or twice per week",
+                "flexibility": "5 minutes of stretching after activity",
+                "notes": "Focus on finding activities you enjoy."
+            }
+        elif fitness_level == "intermediate":
+            return {
+                "cardio": "30 minutes of varied cardio, 3-4 times per week",
+                "strength": "Full-body strength workouts, 2-3 times per week",
+                "flexibility": "10 minutes of stretching or yoga, 2-3 times per week",
+                "notes": "Mix up your routine to keep it interesting."
+            }
+        else:  # advanced
+            return {
+                "cardio": "45-60 minutes of varied cardio, 4-5 times per week",
+                "strength": "Split routine strength training, 3-4 times per week",
+                "flexibility": "Dedicated yoga or stretching sessions, 2 times per week",
+                "notes": "Consider working with a trainer to optimize your program."
+            }
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/questionnaire')
+def questionnaire():
+    return render_template('questionnaire.html')
+
+@app.route('/ultrasound')
+def ultrasound():
+    return render_template('ultrasound.html')
+
+@app.route('/process_questionnaire', methods=['POST'])
+def process_questionnaire():
+    if request.method == 'POST':
+        # Collect all questionnaire answers
+        answers = {
+            'age': int(request.form.get('age', 0)),
+            'weight': float(request.form.get('weight', 0)),
+            'height': float(request.form.get('height', 0)),
+            'irregular_periods': int(request.form.get('irregular_periods', 0)),
+            'weight_gain': int(request.form.get('weight_gain', 0)),
+            'excessive_hair': int(request.form.get('excessive_hair', 0)),
+            'skin_darkening': int(request.form.get('skin_darkening', 0)),
+            'hair_loss': int(request.form.get('hair_loss', 0)),
+            'acne': int(request.form.get('acne', 0)),
+            'family_history': int(request.form.get('family_history', 0)),
+            'vegetarian': int(request.form.get('vegetarian', 0)),
+            'fitness_level': request.form.get('fitness_level', 'beginner')
+        }
+        
+        # Calculate BMI
+        height_m = answers['height'] / 100  # Convert cm to m
+        bmi = answers['weight'] / (height_m * height_m)
+        
+        # Make prediction
+        pcos_predicted = predict_from_questionnaire(answers)
+        
+        # Generate diet and exercise plans
+        diet_plan = get_diet_plan(pcos_predicted, bmi, answers['vegetarian'] == 1)
+        exercise_plan = get_exercise_plan(pcos_predicted, answers['fitness_level'])
+        
+        # Store results in session
+        session['prediction'] = pcos_predicted
+        session['bmi'] = round(bmi, 1)
+        session['diet_plan'] = diet_plan
+        session['exercise_plan'] = exercise_plan
+        
+        return redirect(url_for('results'))
+    
+    return redirect(url_for('questionnaire'))
+
+@app.route('/process_ultrasound', methods=['POST'])
+def process_ultrasound():
+    if request.method == 'POST':
+        # Check if image was uploaded
+        if 'ultrasound_image' not in request.files:
+            flash('No file uploaded')
+            return redirect(url_for('ultrasound'))
+        
+        file = request.files['ultrasound_image']
+        
+        if file.filename == '':
+            flash('No file selected')
+            return redirect(url_for('ultrasound'))
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            
+            # Collect questionnaire answers
+            answers = {
+                'age': int(request.form.get('age', 0)),
+                'weight': float(request.form.get('weight', 0)),
+                'height': float(request.form.get('height', 0)),
+                'irregular_periods': int(request.form.get('irregular_periods', 0)),
+                'polycystic_ovaries': int(request.form.get('polycystic_ovaries', 0)),
+                'hormone_imbalance': int(request.form.get('hormone_imbalance', 0)),
+                'vegetarian': int(request.form.get('vegetarian', 0)),
+                'fitness_level': request.form.get('fitness_level', 'beginner')
+            }
+            
+            # Calculate BMI
+            height_m = answers['height'] / 100  # Convert cm to m
+            bmi = answers['weight'] / (height_m * height_m)
+            
+            # Make prediction based on image and answers
+            pcos_predicted = predict_from_image(file_path, answers)
+            
+            # Generate diet and exercise plans
+            diet_plan = get_diet_plan(pcos_predicted, bmi, answers['vegetarian'] == 1)
+            exercise_plan = get_exercise_plan(pcos_predicted, answers['fitness_level'])
+            
+            # Store results and image path in session
+            session['prediction'] = pcos_predicted
+            session['bmi'] = round(bmi, 1)
+            session['diet_plan'] = diet_plan
+            session['exercise_plan'] = exercise_plan
+            session['image_path'] = os.path.join('uploads', filename)
+            
+            return redirect(url_for('results'))
+        else:
+            flash('File type not allowed. Please upload JPG, JPEG or PNG images only.')
+            return redirect(url_for('ultrasound'))
+    
+    return redirect(url_for('ultrasound'))
+
+@app.route('/results')
+def results():
+    if 'prediction' not in session:
+        return redirect(url_for('home'))
+    
+    # Retrieve results from session
+    prediction = session.get('prediction')
+    bmi = session.get('bmi')
+    diet_plan = session.get('diet_plan')
+    exercise_plan = session.get('exercise_plan')
+    image_path = session.get('image_path', None)
+    
+    return render_template('results.html', 
+                          prediction=prediction, 
+                          bmi=bmi,
+                          diet_plan=diet_plan,
+                          exercise_plan=exercise_plan,
+                          image_path=image_path)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/disclaimer')
+def disclaimer():
+    return render_template('disclaimer.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)

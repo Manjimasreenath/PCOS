@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - PCOS Companion{% endblock %}
+
+{% block additional_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/blog.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+    <!-- Blog Hero Section -->
+    <section class="blog-hero">
+    <h1>PCOS Health & Wellness Blog</h1>
+    <p>Discover expert insights, tips, and stories about managing PCOS effectively</p>
+    </section>
+
+    <section class="blog-content">
+    <!-- Search and Filters -->
+    <div class="blog-filters">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search articles..." id="searchInput">
+                    <i class="fas fa-search"></i>
+                </div>
+        
+                <div class="category-filters">
+            <a href="{{ url_for('blog') }}" class="filter-btn {% if not current_category %}active{% endif %}">All</a>
+            <a href="{{ url_for('blog_by_category', category='Education') }}" 
+               class="filter-btn {% if current_category == 'Education' %}active{% endif %}">Education</a>
+            <a href="{{ url_for('blog_by_category', category='Nutrition') }}" 
+               class="filter-btn {% if current_category == 'Nutrition' %}active{% endif %}">Nutrition</a>
+            <a href="{{ url_for('blog_by_category', category='Fitness') }}" 
+               class="filter-btn {% if current_category == 'Fitness' %}active{% endif %}">Fitness</a>
+                </div>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="blog-grid">
+        {% for blog in blogs %}
+                <article class="blog-card" data-aos="fade-up">
+            <div class="blog-card-content">
+                <div class="blog-category">{{ blog.category }}</div>
+                <h2 class="blog-title">{{ blog.title }}</h2>
+                <p class="blog-excerpt">{{ blog.content[:150] }}...</p>
+                <div class="blog-meta">
+                    <span class="blog-author">
+                        <i class="fas fa-user"></i> {{ blog.author }}
+                            </span>
+                    <span class="blog-date">
+                        <i class="fas fa-calendar"></i> {{ blog.date_posted }}
+                            </span>
+                        </div>
+                <div class="blog-tags">
+                    {% for tag in blog.tags %}
+                    <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+                <a href="{{ url_for('blog_detail', blog_id=blog._id) }}" class="read-more">
+                    Read More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </article>
+            {% else %}
+        <div class="no-posts">
+                <i class="fas fa-newspaper"></i>
+            <h3>No Posts Found</h3>
+            <p>Check back later for new articles</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="newsletter-content">
+                <h2>Stay Updated</h2>
+            <p>Subscribe to our newsletter for the latest PCOS insights and health tips</p>
+            <form class="newsletter-form" id="newsletterForm">
+                    <div class="form-group">
+                    <input type="email" placeholder="Enter your email address" required>
+                        <button type="submit" class="subscribe-btn">
+                        <i class="fas fa-paper-plane"></i> Subscribe
+                        </button>
+                    </div>
+                <p class="form-note">We respect your privacy. Unsubscribe at any time.</p>
+                </form>
+        </div>
+    </section>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const blogCards = document.querySelectorAll('.blog-card');
+    
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        blogCards.forEach(card => {
+            const title = card.querySelector('.blog-title').textContent.toLowerCase();
+            const content = card.querySelector('.blog-excerpt').textContent.toLowerCase();
+            const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+            
+            const isVisible = 
+                title.includes(searchTerm) || 
+                content.includes(searchTerm) || 
+                tags.some(tag => tag.includes(searchTerm));
+                
+            card.style.display = isVisible ? 'block' : 'none';
+        });
+    });
+
+    // Newsletter form submission
+    const newsletterForm = document.getElementById('newsletterForm');
+    newsletterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = this.querySelector('input[type="email"]').value;
+        // Add your newsletter subscription logic here
+        alert('Thank you for subscribing! Please check your email to confirm.');
+        this.reset();
+    });
+
+    // Initialize AOS (if you're using it)
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    }
+});
+    </script>
+{% endblock %}
